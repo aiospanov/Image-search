@@ -1,0 +1,63 @@
+-- Migration 001: label_synonyms dictionary table (section 6.1 of PRD)
+
+CREATE TABLE IF NOT EXISTS label_synonyms (
+    label_en   TEXT PRIMARY KEY,
+    terms_ru   TEXT[]         NOT NULL,
+    updated_at TIMESTAMP      NOT NULL DEFAULT NOW()
+);
+
+-- Seed: top-50 category mappings (PRD §6.2 — covers ~80% of typical queries)
+INSERT INTO label_synonyms (label_en, terms_ru) VALUES
+  ('sneakers',          ARRAY['кроссовки', 'кеды']),
+  ('shoes',             ARRAY['обувь', 'туфли', 'ботинки']),
+  ('boot',              ARRAY['ботинки', 'сапоги']),
+  ('sandal',            ARRAY['сандалии', 'босоножки']),
+  ('jacket',            ARRAY['куртка', 'жакет', 'ветровка']),
+  ('coat',              ARRAY['пальто', 'шуба']),
+  ('dress',             ARRAY['платье', 'сарафан']),
+  ('shirt',             ARRAY['рубашка', 'сорочка']),
+  ('t-shirt',           ARRAY['футболка', 'майка']),
+  ('jeans',             ARRAY['джинсы', 'брюки']),
+  ('trousers',          ARRAY['брюки', 'штаны']),
+  ('shorts',            ARRAY['шорты']),
+  ('skirt',             ARRAY['юбка']),
+  ('sweater',           ARRAY['свитер', 'джемпер', 'пуловер']),
+  ('hoodie',            ARRAY['худи', 'толстовка']),
+  ('handbag',           ARRAY['сумка', 'сумочка']),
+  ('backpack',          ARRAY['рюкзак']),
+  ('wallet',            ARRAY['кошелёк', 'портмоне']),
+  ('belt',              ARRAY['ремень', 'пояс']),
+  ('hat',               ARRAY['шапка', 'кепка', 'шляпа']),
+  ('sunglasses',        ARRAY['солнцезащитные очки', 'очки']),
+  ('watch',             ARRAY['часы', 'наручные часы']),
+  ('ring',              ARRAY['кольцо']),
+  ('necklace',          ARRAY['ожерелье', 'цепочка']),
+  ('bracelet',          ARRAY['браслет']),
+  ('earring',           ARRAY['серьги']),
+  ('smartphone',        ARRAY['смартфон', 'телефон', 'мобильный']),
+  ('laptop',            ARRAY['ноутбук', 'лэптоп']),
+  ('tablet',            ARRAY['планшет']),
+  ('headphones',        ARRAY['наушники']),
+  ('speaker',           ARRAY['колонка', 'акустика']),
+  ('camera',            ARRAY['фотоаппарат', 'камера']),
+  ('keyboard',          ARRAY['клавиатура']),
+  ('mouse',             ARRAY['мышь', 'мышка']),
+  ('monitor',           ARRAY['монитор', 'экран']),
+  ('television',        ARRAY['телевизор', 'тв']),
+  ('sofa',              ARRAY['диван', 'кресло']),
+  ('chair',             ARRAY['стул', 'кресло']),
+  ('table',             ARRAY['стол', 'столик']),
+  ('lamp',              ARRAY['лампа', 'светильник', 'люстра']),
+  ('bookcase',          ARRAY['книжный шкаф', 'стеллаж']),
+  ('pillow',            ARRAY['подушка']),
+  ('blanket',           ARRAY['плед', 'одеяло']),
+  ('cup',               ARRAY['кружка', 'чашка']),
+  ('bottle',            ARRAY['бутылка', 'термос']),
+  ('toy',               ARRAY['игрушка']),
+  ('bicycle',           ARRAY['велосипед']  ),
+  ('fitness equipment', ARRAY['тренажёр', 'спортивный инвентарь']),
+  ('yoga mat',          ARRAY['коврик для йоги', 'спортивный коврик']),
+  ('book',              ARRAY['книга'])
+ON CONFLICT (label_en) DO UPDATE
+  SET terms_ru   = EXCLUDED.terms_ru,
+      updated_at = NOW();
