@@ -1,0 +1,252 @@
+[
+  {
+    "id": "sku-001",
+    "name": "Кроссовки Nike Air Max 270",
+    "price": 8990,
+    "image_url": "https://placehold.co/400x400?text=Nike+Air+Max",
+    "category": "Обувь",
+    "brand": "Nike",
+    "in_stock": true,
+    "tags": ["кроссовки", "кеды", "обувь", "спорт", "nike"]
+  },
+  {
+    "id": "sku-002",
+    "name": "Кроссовки Adidas Ultraboost",
+    "price": 9500,
+    "image_url": "https://placehold.co/400x400?text=Adidas+Ultraboost",
+    "category": "Обувь",
+    "brand": "Adidas",
+    "in_stock": true,
+    "tags": ["кроссовки", "кеды", "обувь", "спорт", "adidas", "бег"]
+  },
+  {
+    "id": "sku-003",
+    "name": "Куртка зимняя Columbia Powder Lite",
+    "price": 12500,
+    "image_url": "https://placehold.co/400x400?text=Columbia+Jacket",
+    "category": "Верхняя одежда",
+    "brand": "Columbia",
+    "in_stock": true,
+    "tags": ["куртка", "ветровка", "зима", "пуховик", "верхняя одежда"]
+  },
+  {
+    "id": "sku-004",
+    "name": "Куртка-ветровка The North Face",
+    "price": 7800,
+    "image_url": "https://placehold.co/400x400?text=North+Face",
+    "category": "Верхняя одежда",
+    "brand": "The North Face",
+    "in_stock": true,
+    "tags": ["куртка", "ветровка", "жакет", "верхняя одежда"]
+  },
+  {
+    "id": "sku-005",
+    "name": "Смартфон Samsung Galaxy S24",
+    "price": 74990,
+    "image_url": "https://placehold.co/400x400?text=Samsung+S24",
+    "category": "Смартфоны",
+    "brand": "Samsung",
+    "in_stock": true,
+    "tags": ["смартфон", "телефон", "мобильный", "samsung", "android"]
+  },
+  {
+    "id": "sku-006",
+    "name": "Смартфон Apple iPhone 15",
+    "price": 89990,
+    "image_url": "https://placehold.co/400x400?text=iPhone+15",
+    "category": "Смартфоны",
+    "brand": "Apple",
+    "in_stock": true,
+    "tags": ["смартфон", "телефон", "мобильный", "apple", "iphone", "ios"]
+  },
+  {
+    "id": "sku-007",
+    "name": "Ноутбук ASUS ZenBook 14",
+    "price": 54990,
+    "image_url": "https://placehold.co/400x400?text=ASUS+ZenBook",
+    "category": "Ноутбуки",
+    "brand": "ASUS",
+    "in_stock": true,
+    "tags": ["ноутбук", "лэптоп", "компьютер", "asus"]
+  },
+  {
+    "id": "sku-008",
+    "name": "Ноутбук Apple MacBook Air M2",
+    "price": 109990,
+    "image_url": "https://placehold.co/400x400?text=MacBook+Air",
+    "category": "Ноутбуки",
+    "brand": "Apple",
+    "in_stock": false,
+    "tags": ["ноутбук", "лэптоп", "macbook", "apple", "компьютер"]
+  },
+  {
+    "id": "sku-009",
+    "name": "Наушники Sony WH-1000XM5",
+    "price": 27990,
+    "image_url": "https://placehold.co/400x400?text=Sony+WH1000XM5",
+    "category": "Аудио",
+    "brand": "Sony",
+    "in_stock": true,
+    "tags": ["наушники", "аудио", "sony", "беспроводные", "шумоподавление"]
+  },
+  {
+    "id": "sku-010",
+    "name": "Наушники AirPods Pro 2",
+    "price": 22990,
+    "image_url": "https://placehold.co/400x400?text=AirPods+Pro",
+    "category": "Аудио",
+    "brand": "Apple",
+    "in_stock": true,
+    "tags": ["наушники", "аудио", "apple", "airpods", "беспроводные"]
+  },
+  {
+    "id": "sku-011",
+    "name": "Платье летнее Zara",
+    "price": 3490,
+    "image_url": "https://placehold.co/400x400?text=Zara+Dress",
+    "category": "Одежда",
+    "brand": "Zara",
+    "in_stock": true,
+    "tags": ["платье", "сарафан", "одежда", "лето", "zara"]
+  },
+  {
+    "id": "sku-012",
+    "name": "Джинсы Levi's 501 Original",
+    "price": 5990,
+    "image_url": "https://placehold.co/400x400?text=Levis+501",
+    "category": "Одежда",
+    "brand": "Levi's",
+    "in_stock": true,
+    "tags": ["джинсы", "брюки", "штаны", "одежда", "levis"]
+  },
+  {
+    "id": "sku-013",
+    "name": "Рюкзак Samsonite городской",
+    "price": 6800,
+    "image_url": "https://placehold.co/400x400?text=Samsonite+Backpack",
+    "category": "Сумки",
+    "brand": "Samsonite",
+    "in_stock": true,
+    "tags": ["рюкзак", "сумка", "samsonite", "городской"]
+  },
+  {
+    "id": "sku-014",
+    "name": "Сумка Michael Kors кожаная",
+    "price": 18500,
+    "image_url": "https://placehold.co/400x400?text=Michael+Kors+Bag",
+    "category": "Сумки",
+    "brand": "Michael Kors",
+    "in_stock": true,
+    "tags": ["сумка", "сумочка", "кожаная", "michael kors", "женская"]
+  },
+  {
+    "id": "sku-015",
+    "name": "Часы Casio G-Shock",
+    "price": 9990,
+    "image_url": "https://placehold.co/400x400?text=Casio+G-Shock",
+    "category": "Аксессуары",
+    "brand": "Casio",
+    "in_stock": true,
+    "tags": ["часы", "наручные часы", "casio", "g-shock", "спорт"]
+  },
+  {
+    "id": "sku-016",
+    "name": "Часы Apple Watch Series 9",
+    "price": 39990,
+    "image_url": "https://placehold.co/400x400?text=Apple+Watch+S9",
+    "category": "Аксессуары",
+    "brand": "Apple",
+    "in_stock": true,
+    "tags": ["часы", "наручные часы", "apple watch", "смарт-часы", "apple"]
+  },
+  {
+    "id": "sku-017",
+    "name": "Диван угловой IKEA KIVIK",
+    "price": 45000,
+    "image_url": "https://placehold.co/400x400?text=IKEA+Kivik",
+    "category": "Мебель",
+    "brand": "IKEA",
+    "in_stock": true,
+    "tags": ["диван", "кресло", "мебель", "гостиная", "ikea"]
+  },
+  {
+    "id": "sku-018",
+    "name": "Стол письменный IKEA MICKE",
+    "price": 8990,
+    "image_url": "https://placehold.co/400x400?text=IKEA+Micke",
+    "category": "Мебель",
+    "brand": "IKEA",
+    "in_stock": true,
+    "tags": ["стол", "столик", "письменный стол", "мебель", "ikea"]
+  },
+  {
+    "id": "sku-019",
+    "name": "Фотоаппарат Sony Alpha ZV-E10",
+    "price": 44990,
+    "image_url": "https://placehold.co/400x400?text=Sony+ZV-E10",
+    "category": "Фото и видео",
+    "brand": "Sony",
+    "in_stock": true,
+    "tags": ["фотоаппарат", "камера", "sony", "беззеркальный", "фото"]
+  },
+  {
+    "id": "sku-020",
+    "name": "Велосипед горный Trek Marlin 5",
+    "price": 39500,
+    "image_url": "https://placehold.co/400x400?text=Trek+Marlin+5",
+    "category": "Спорт",
+    "brand": "Trek",
+    "in_stock": true,
+    "tags": ["велосипед", "горный велосипед", "спорт", "trek"]
+  },
+  {
+    "id": "sku-021",
+    "name": "Коврик для йоги Manduka PRO",
+    "price": 7200,
+    "image_url": "https://placehold.co/400x400?text=Manduka+Mat",
+    "category": "Спорт",
+    "brand": "Manduka",
+    "in_stock": true,
+    "tags": ["коврик для йоги", "спортивный коврик", "йога", "фитнес", "спорт"]
+  },
+  {
+    "id": "sku-022",
+    "name": "Кофемашина DeLonghi Magnifica",
+    "price": 42000,
+    "image_url": "https://placehold.co/400x400?text=DeLonghi+Magnifica",
+    "category": "Бытовая техника",
+    "brand": "DeLonghi",
+    "in_stock": true,
+    "tags": ["кофемашина", "кофе", "delonghi", "кухня", "техника"]
+  },
+  {
+    "id": "sku-023",
+    "name": "Термос Stanley Classic 1L",
+    "price": 3800,
+    "image_url": "https://placehold.co/400x400?text=Stanley+Thermos",
+    "category": "Посуда",
+    "brand": "Stanley",
+    "in_stock": true,
+    "tags": ["термос", "бутылка", "stanley", "посуда", "туризм"]
+  },
+  {
+    "id": "sku-024",
+    "name": "Солнцезащитные очки Ray-Ban Wayfarer",
+    "price": 8500,
+    "image_url": "https://placehold.co/400x400?text=Ray-Ban+Wayfarer",
+    "category": "Аксессуары",
+    "brand": "Ray-Ban",
+    "in_stock": true,
+    "tags": ["очки", "солнцезащитные очки", "ray-ban", "аксессуары", "лето"]
+  },
+  {
+    "id": "sku-025",
+    "name": "Свитер шерстяной Hugo Boss",
+    "price": 11990,
+    "image_url": "https://placehold.co/400x400?text=Hugo+Boss+Sweater",
+    "category": "Одежда",
+    "brand": "Hugo Boss",
+    "in_stock": true,
+    "tags": ["свитер", "джемпер", "пуловер", "одежда", "шерсть", "hugo boss"]
+  }
+]

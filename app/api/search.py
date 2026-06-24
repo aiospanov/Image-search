@@ -5,7 +5,6 @@ from fastapi import APIRouter, File, HTTPException, Request, UploadFile, status
 from fastapi.responses import JSONResponse
 
 from app.config import settings
-from app.services.image_search import search_products
 from app.services.label_mapper import map_labels
 from app.services.vision_service import VisionServiceError, get_labels
 
@@ -13,16 +12,13 @@ router = APIRouter(prefix="/api/search", tags=["search"])
 
 ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/webp"}
 
-# Simple in-memory rate limiter: {ip: [(timestamp, count)]}
 _rate_buckets: dict[str, list[float]] = defaultdict(list)
 
 
 def _check_rate_limit(ip: str) -> None:
     now = time.monotonic()
     window = settings.rate_limit_window_seconds
-    bucket = _rate_buckets[ip]
-    # Remove timestamps outside the window
-    _rate_buckets[ip] = [t for t in bucket if now - t < window]
+    _rate_buckets[ip] = [t for t in _rate_buckets[ip] if now - t < window]
     if len(_rate_buckets[ip]) >= settings.rate_limit_requests:
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
@@ -31,17 +27,33 @@ def _check_rate_limit(ip: str) -> None:
     _rate_buckets[ip].append(now)
 
 
+def _do_search(russian_terms: list[str]):
+    if settings.use_mock:
+        from app.services.mock_search import mock_search_products
+        return mock_search_products(russian_terms)
+    else:
+        import asyncio
+        from app.services.image_search import search_products
+        return search_products(russian_terms)
+
+
+async def _get_labels_safe(image_bytes: bytes):
+    if settings.use_mock and not settings.google_vision_api_key:
+        from app.services.mock_vision import mock_get_labels
+        return mock_get_labels(image_bytes)
+    return await get_labels(image_bytes)
+
+
 @router.post("/image")
 async def image_search(request: Request, file: UploadFile = File(...)):
     """
     POST /api/search/image
     Accepts jpg/png/webp up to 10 MB, returns matched products and applied labels.
+    Set USE_MOCK=true in .env to run without real databases or Google API key.
     """
-    # Rate limiting (NFR-09)
     client_ip = request.client.host if request.client else "unknown"
     _check_rate_limit(client_ip)
 
-    # Validate content type (FR-04)
     if file.content_type not in ALLOWED_CONTENT_TYPES:
         raise HTTPException(
             status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
@@ -50,16 +62,14 @@ async def image_search(request: Request, file: UploadFile = File(...)):
 
     image_bytes = await file.read()
 
-    # Validate file size (FR-01)
     if len(image_bytes) > settings.max_image_size_bytes:
         raise HTTPException(
             status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
             detail="Файл слишком большой. Максимальный размер — 10 МБ.",
         )
 
-    # Analyse image (FR-05, FR-06)
     try:
-        vision_labels = await get_labels(image_bytes)
+        vision_labels = await _get_labels_safe(image_bytes)
     except VisionServiceError as exc:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(exc)
@@ -76,11 +86,18 @@ async def image_search(request: Request, file: UploadFile = File(...)):
 
     labels_en = [lbl.description for lbl in vision_labels]
 
-    # Map labels to Russian (FR-07, FR-08)
-    russian_terms = await map_labels(labels_en)
+    # Map labels EN→RU. In mock mode without translate key — skip gracefully.
+    try:
+        russian_terms = await map_labels(labels_en)
+    except Exception:
+        russian_terms = labels_en  # fallback: use English labels as-is
 
-    # Search Elasticsearch (FR-10 – FR-13)
-    products, applied_labels = await search_products(russian_terms)
+    result = _do_search(russian_terms)
+    # mock_search_products returns tuple directly; search_products is a coroutine
+    if hasattr(result, "__await__"):
+        products, applied_labels = await result
+    else:
+        products, applied_labels = result
 
     if not products:
         return JSONResponse(

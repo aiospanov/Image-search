@@ -14,12 +14,70 @@ _cache_lock = asyncio.Lock()
 
 
 async def _load_cache() -> None:
-    pool = await get_pool()
-    async with pool.acquire() as conn:
-        rows = await conn.fetch("SELECT label_en, terms_ru FROM label_synonyms")
     global _cache, _cache_loaded_at
-    _cache = {row["label_en"]: list(row["terms_ru"]) for row in rows}
+    if settings.use_mock:
+        _cache = _BUILTIN_DICT.copy()
+    else:
+        pool = await get_pool()
+        async with pool.acquire() as conn:
+            rows = await conn.fetch("SELECT label_en, terms_ru FROM label_synonyms")
+        _cache = {row["label_en"]: list(row["terms_ru"]) for row in rows}
     _cache_loaded_at = time.monotonic()
+
+
+# Built-in dictionary used in mock mode (mirrors 001_create_label_synonyms.sql)
+_BUILTIN_DICT: dict[str, list[str]] = {
+    "sneakers":          ["кроссовки", "кеды"],
+    "shoes":             ["обувь", "туфли", "ботинки"],
+    "boot":              ["ботинки", "сапоги"],
+    "sandal":            ["сандалии", "босоножки"],
+    "jacket":            ["куртка", "жакет", "ветровка"],
+    "coat":              ["пальто", "шуба"],
+    "dress":             ["платье", "сарафан"],
+    "shirt":             ["рубашка", "сорочка"],
+    "t-shirt":           ["футболка", "майка"],
+    "jeans":             ["джинсы", "брюки"],
+    "trousers":          ["брюки", "штаны"],
+    "shorts":            ["шорты"],
+    "skirt":             ["юбка"],
+    "sweater":           ["свитер", "джемпер", "пуловер"],
+    "hoodie":            ["худи", "толстовка"],
+    "handbag":           ["сумка", "сумочка"],
+    "backpack":          ["рюкзак"],
+    "wallet":            ["кошелёк", "портмоне"],
+    "belt":              ["ремень", "пояс"],
+    "hat":               ["шапка", "кепка", "шляпа"],
+    "sunglasses":        ["солнцезащитные очки", "очки"],
+    "watch":             ["часы", "наручные часы"],
+    "ring":              ["кольцо"],
+    "necklace":          ["ожерелье", "цепочка"],
+    "bracelet":          ["браслет"],
+    "earring":           ["серьги"],
+    "smartphone":        ["смартфон", "телефон", "мобильный"],
+    "laptop":            ["ноутбук", "лэптоп"],
+    "tablet":            ["планшет"],
+    "headphones":        ["наушники"],
+    "speaker":           ["колонка", "акустика"],
+    "camera":            ["фотоаппарат", "камера"],
+    "keyboard":          ["клавиатура"],
+    "mouse":             ["мышь", "мышка"],
+    "monitor":           ["монитор", "экран"],
+    "television":        ["телевизор", "тв"],
+    "sofa":              ["диван", "кресло"],
+    "chair":             ["стул", "кресло"],
+    "table":             ["стол", "столик"],
+    "lamp":              ["лампа", "светильник", "люстра"],
+    "bookcase":          ["книжный шкаф", "стеллаж"],
+    "pillow":            ["подушка"],
+    "blanket":           ["плед", "одеяло"],
+    "cup":               ["кружка", "чашка"],
+    "bottle":            ["бутылка", "термос"],
+    "toy":               ["игрушка"],
+    "bicycle":           ["велосипед"],
+    "fitness equipment": ["тренажёр", "спортивный инвентарь"],
+    "yoga mat":          ["коврик для йоги", "спортивный коврик"],
+    "book":              ["книга"],
+}
 
 
 async def _ensure_cache() -> None:

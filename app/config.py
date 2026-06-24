@@ -15,6 +15,9 @@ class Settings(BaseSettings):
     rate_limit_requests: int = 10
     rate_limit_window_seconds: int = 60
 
+    use_mock: bool = False
+    mock_data_path: str = "mock_data/products.json"
+
     max_image_size_bytes: int = 10 * 1024 * 1024  # 10 MB
     compressed_image_size_bytes: int = 1 * 1024 * 1024  # 1 MB
     vision_confidence_threshold: float = 0.70
