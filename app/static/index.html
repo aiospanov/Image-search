@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Поиск по фото</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #222; }
+
+    header { background: #fff; padding: 16px 24px; border-bottom: 1px solid #e0e0e0; display: flex; align-items: center; gap: 12px; }
+    header h1 { font-size: 20px; font-weight: 700; }
+    header span { font-size: 24px; }
+
+    .hero { text-align: center; padding: 48px 24px 24px; }
+    .hero h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    .hero p { color: #666; font-size: 16px; }
+
+    .upload-area {
+      margin: 32px auto;
+      max-width: 480px;
+      background: #fff;
+      border: 2px dashed #ccc;
+      border-radius: 16px;
+      padding: 40px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+    .upload-area:hover, .upload-area.drag { border-color: #4f46e5; background: #f0f0ff; }
+    .upload-area input { display: none; }
+    .upload-icon { font-size: 48px; margin-bottom: 12px; }
+    .upload-area p { color: #666; font-size: 15px; margin-bottom: 4px; }
+    .upload-area small { color: #999; font-size: 13px; }
+
+    #preview-wrap { margin: 0 auto 16px; max-width: 480px; display: none; text-align: center; }
+    #preview-wrap img { max-height: 240px; border-radius: 12px; object-fit: cover; box-shadow: 0 2px 12px rgba(0,0,0,.12); }
+
+    .btn {
+      display: block; margin: 0 auto; padding: 14px 40px;
+      background: #4f46e5; color: #fff; border: none; border-radius: 10px;
+      font-size: 16px; font-weight: 600; cursor: pointer; transition: background .2s;
+    }
+    .btn:hover { background: #4338ca; }
+    .btn:disabled { background: #a5b4fc; cursor: not-allowed; }
+
+    #status { text-align: center; margin: 16px; color: #666; font-size: 14px; min-height: 20px; }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 0 auto 24px; max-width: 700px; padding: 0 16px; }
+    .tag { background: #ede9fe; color: #4f46e5; border-radius: 20px; padding: 4px 14px; font-size: 13px; font-weight: 500; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; max-width: 900px; margin: 0 auto 48px; padding: 0 16px; }
+    .card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,.08); transition: transform .15s; }
+    .card:hover { transform: translateY(-3px); }
+    .card img { width: 100%; aspect-ratio: 1; object-fit: cover; background: #f0f0f0; }
+    .card-body { padding: 12px; }
+    .card-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; line-height: 1.3; }
+    .card-meta { font-size: 12px; color: #888; margin-bottom: 6px; }
+    .card-price { font-size: 16px; font-weight: 700; color: #4f46e5; }
+    .badge-out { font-size: 11px; background: #fee2e2; color: #dc2626; border-radius: 6px; padding: 2px 6px; margin-left: 6px; }
+
+    #empty { text-align: center; padding: 40px; display: none; }
+    #empty .emoji { font-size: 48px; }
+    #empty p { color: #666; margin-top: 12px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <span>🔍</span>
+  <h1>Поиск товаров по фото</h1>
+</header>
+
+<div class="hero">
+  <h2>Сфотографируй — найди</h2>
+  <p>Загрузите фото товара и мы найдём похожее в каталоге</p>
+</div>
+
+<div class="upload-area" id="dropzone">
+  <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" />
+  <div class="upload-icon">📷</div>
+  <p>Нажмите или перетащите фото сюда</p>
+  <small>JPG, PNG, WEBP · до 10 МБ</small>
+</div>
+
+<div id="preview-wrap"><img id="preview" src="" alt="preview" /></div>
+
+<button class="btn" id="search-btn" disabled>Найти товары</button>
+<div id="status"></div>
+
+<div class="tags" id="tags"></div>
+<div class="grid" id="grid"></div>
+<div id="empty">
+  <div class="emoji">🤷</div>
+  <p id="empty-msg">По этому фото ничего не найдено.<br>Попробуйте другое изображение.</p>
+</div>
+
+<script>
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('file-input');
+  const searchBtn = document.getElementById('search-btn');
+  const preview = document.getElementById('preview');
+  const previewWrap = document.getElementById('preview-wrap');
+  const status = document.getElementById('status');
+  const tags = document.getElementById('tags');
+  const grid = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+  let selectedFile = null;
+
+  dropzone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+
+  dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag'); });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'));
+  dropzone.addEventListener('drop', e => { e.preventDefault(); dropzone.classList.remove('drag'); handleFile(e.dataTransfer.files[0]); });
+
+  function handleFile(file) {
+    if (!file) return;
+    if (!['image/jpeg','image/png','image/webp'].includes(file.type)) { alert('Поддерживаются только JPG, PNG, WEBP'); return; }
+    if (file.size > 10 * 1024 * 1024) { alert('Файл слишком большой (максимум 10 МБ)'); return; }
+    selectedFile = file;
+    preview.src = URL.createObjectURL(file);
+    previewWrap.style.display = 'block';
+    searchBtn.disabled = false;
+    grid.innerHTML = ''; tags.innerHTML = ''; empty.style.display = 'none'; status.textContent = '';
+  }
+
+  searchBtn.addEventListener('click', async () => {
+    if (!selectedFile) return;
+    searchBtn.disabled = true;
+    status.textContent = 'Анализируем фото…';
+    grid.innerHTML = ''; tags.innerHTML = ''; empty.style.display = 'none';
+
+    const form = new FormData();
+    form.append('file', selectedFile);
+
+    try {
+      const res = await fetch('/api/search/image', { method: 'POST', body: form });
+      const data = await res.json();
+
+      if (!res.ok) { status.textContent = data.detail || 'Ошибка сервера'; return; }
+
+      status.textContent = '';
+
+      if (data.applied_labels?.length) {
+        tags.innerHTML = data.applied_labels.map(l => `<span class="tag">${l}</span>`).join('');
+      }
+
+      if (!data.products?.length) {
+        empty.style.display = 'block';
+        document.getElementById('empty-msg').textContent = data.message || 'По этому фото ничего не найдено.';
+        return;
+      }
+
+      grid.innerHTML = data.products.map(p => `
+        <div class="card">
+          <img src="${p.image_url || 'https://placehold.co/400x400?text=Нет+фото'}" alt="${p.name}" loading="lazy" />
+          <div class="card-body">
+            <div class="card-name">${p.name}</div>
+            <div class="card-meta">${p.brand || ''} ${p.category ? '· ' + p.category : ''}</div>
+            <div class="card-price">${Number(p.price).toLocaleString('ru-RU')} ₽
+              ${!p.in_stock ? '<span class="badge-out">Нет в наличии</span>' : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+    } catch(e) {
+      status.textContent = 'Не удалось подключиться к серверу.';
+    } finally {
+      searchBtn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
